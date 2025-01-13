@@ -5,6 +5,8 @@
   
   GET
   args: page, pagesize, *if none are provided fetches full list*
+
+  [{id, name, tags}]
   
 - get_pasta/{id}
   
