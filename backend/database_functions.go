@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 )
@@ -158,5 +159,24 @@ func get_records() ([]pasta, error) {
 		result.Scan(&retval[i].Id, &retval[i].Name)
 		i++
 	}
+	//TODO: add tag support
 	return retval, nil
+}
+
+func get_pasta(id int) (pasta, error) {
+	query := "SELECT pasta_id, pasta_name, pasta_body FROM pasty WHERE pasta_id = $1"
+	stmt, err := connection.Prepare(query)
+	var p pasta
+	if err != nil {
+		return p, err
+	}
+	result, err := stmt.Query(id)
+	if !result.Next() {
+		return p, errors.New("pasta does not exist")
+	}
+	err = result.Scan(&p.Id, &p.Name, &p.Text)
+	if err != nil {
+		return p, err
+	}
+	return p, nil
 }
