@@ -18,6 +18,21 @@ class MyTestCase(unittest.TestCase):
         result = response.json()
         print(f"{result["token"]}")
 
+    def test_add_record(self):
+        json = {"Credentials": "lil_cock", "Password": "1"}
+        response = r.post('http://localhost:8000/login', json=json)
+        self.assertEqual(response.status_code, 200)
+        result = response.json()
+        token = result["token"]
+
+        json = {"Name": "Test story", "Text": """text"""
+                }
+        response = r.post('http://localhost:8000/add_pasta', json=json, headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, "Success")
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

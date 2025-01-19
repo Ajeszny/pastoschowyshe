@@ -134,6 +134,60 @@ func fetch_pasta(w http.ResponseWriter, q *http.Request) {
 	w.Write(mrsh)
 }
 
+func validate_signature(token *jwt.Token) (interface{}, error) {
+	_, ok := token.Method.(*jwt.SigningMethodHMAC)
+	if !ok {
+		return "Unauthorized", nil
+	}
+	return []byte(os.Getenv("JWT_KEY")), nil
+}
+
+func authorize(endpointHandler func(writer http.ResponseWriter, request *http.Request)) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["Authorization"] == nil {
+			w.WriteHeader(403)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+		token, err := jwt.Parse(strings.Split(r.Header["Authorization"][0], " ")[1], validate_signature)
+		if err != nil {
+			w.WriteHeader(403)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+		if !token.Valid {
+			w.WriteHeader(403)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+		endpointHandler(w, r)
+	})
+}
+
+func add_pasta(w http.ResponseWriter, q *http.Request) {
+	if q.Method != "POST" {
+		w.WriteHeader(400)
+		w.Write([]byte("Wrong request"))
+		return
+	}
+	decoder := json.NewDecoder(q.Body)
+	var data pasta
+	err := decoder.Decode(&data)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("Wrong request"))
+		return
+	}
+	err = add_new_record(data)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("Database error" + err.Error()))
+		return
+	}
+	w.WriteHeader(200)
+	w.Write([]byte("Success"))
+}
+
 func main() {
 	_ = create_db()
 	err := populate_db()
@@ -141,15 +195,10 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-	add_new_creds("1", "1")
-	err = add_new_record(pasta{Name: "Сказка как дед насрал в коляску",
-		Text: "И поставил в уголок чтоб никто не уволок",
-		Tags: []string{"говно", "дед"}})
-	records, err := get_records()
-	fmt.Sprintf(records[0].Name)
 	http.HandleFunc("/get_pasta_list", get_pastas)
 	http.HandleFunc("/get_pasta/", fetch_pasta)
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/add_pasta", authorize(add_pasta))
 	s := &http.Server{
 		Addr:           ":8000",
 		ReadTimeout:    10 * time.Second,
