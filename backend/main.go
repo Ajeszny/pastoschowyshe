@@ -69,6 +69,10 @@ func fetch_pasta(w http.ResponseWriter, q *http.Request) {
 	w.Write(mrsh)
 }
 
+func login(w http.ResponseWriter, q *http.Request) {
+
+}
+
 func main() {
 	_ = create_db()
 	err := populate_db()
@@ -76,6 +80,11 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
+	err = add_new_record(pasta{Name: "Сказка как дед насрал в коляску",
+		Text: "И поставил в уголок чтоб никто не уволок",
+		Tags: []string{"говно", "дед"}})
+	records, err := get_records()
+	fmt.Sprintf(records[0].Name)
 	http.HandleFunc("/get_pasta_list", get_pastas)
 	http.HandleFunc("/get_pasta/", fetch_pasta)
 	s := &http.Server{

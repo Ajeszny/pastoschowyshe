@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/lib/pq"
 	"os"
+	"strings"
 )
 
 var connection *sql.DB
@@ -26,13 +28,13 @@ func create_db() error {
 		return nil
 	}
 	stmt.Close()
-	query = fmt.Sprintf("CREATE DATABASE $1")
+	query = fmt.Sprintf("CREATE DATABASE pastoshowyshe")
 	stmt, err = conn.Prepare(query)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(os.Getenv("DB_NAME"))
+	_, err = stmt.Exec()
 	if err != nil {
 		return err
 	}
@@ -51,38 +53,11 @@ func populate_db() error {
 		return err
 	}
 	connection = conn
-
-	query := fmt.Sprintf(
-		"CREATE TABLE IF NOT EXISTS pasty (pasta_id SERIAL PRIMARY KEY, pasta_name varchar(100), pasta_body varchar(100000))")
-	stmt, err := connection.Prepare(query)
+	query, err := os.ReadFile(os.Getenv("DB_FILE_PATH"))
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec()
-	stmt.Close()
-	if err != nil {
-		return err
-	}
-
-	query = fmt.Sprintf("CREATE TABLE IF NOT EXISTS pasty_tag_relation (pasta_id integer, tag_id integer)")
-	stmt, err = connection.Prepare(query)
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec()
-	stmt.Close()
-	if err != nil {
-		return err
-	}
-
-	query = fmt.Sprintf(
-		"CREATE TABLE IF NOT EXISTS Tags (tag_id SERIAL PRIMARY KEY, tag_root varchar(100), tag_name varchar(130))")
-	stmt, err = connection.Prepare(query)
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec()
-	stmt.Close()
+	_, err = connection.Exec(string(query))
 	if err != nil {
 		return err
 	}
@@ -90,73 +65,41 @@ func populate_db() error {
 }
 
 func add_new_record(new pasta) error {
-	query := fmt.Sprintf("INSERT INTO pasty (pasta_name, pasta_body)  VALUES($1, $2)")
+	query := fmt.Sprintf("SELECT insert_pasta($1, $2, $3)")
 	stmt, err := connection.Prepare(query)
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(new.Name, new.Text)
+	tags := "{" + strings.Join(new.Tags, ",") + "}"
+	_, err = stmt.Query(new.Name, new.Text, tags)
 	if err != nil {
 		return err
 	}
-	stmt.Close()
-	query = "SELECT pasta_id FROM pasty WHERE pasta_name = $1"
-	stmt, err = connection.Prepare(query)
-	if err != nil {
-		return err
-	}
-	qres, err := stmt.Query(new.Name)
-	var pasta_id int
-	if qres.Next() {
-		qres.Scan(&pasta_id)
-	}
-	if err != nil {
-		return err
-	}
-	stmt.Close()
-
-	for _, tag := range new.Tags {
-		query = "SELECT tag_id FROM Tags WHERE tag_root = $1"
-		stmt, err = connection.Prepare(query)
-		if err != nil {
-			return err
-		}
-		result, err := stmt.Query(tag)
-		var tag_id int
-		if result.Next() {
-			result.Scan(&tag_id)
-		}
-		if err != nil {
-			return err
-		}
-		stmt.Close()
-		query = "INSERT INTO pasty_tag_relation VALUES($1, $2)"
-		stmt, err := connection.Prepare(query)
-		if err != nil {
-			return err
-		}
-		_, err = stmt.Exec(pasta_id, tag_id)
-		if err != nil {
-			return err
-		}
-		stmt.Close()
-	}
-
 	return nil
 }
 
 func get_records() ([]pasta, error) {
-	query := "SELECT pasta_id, pasta_name FROM pasty"
+	query := "SELECT pastaid, pastaname, tags from get_records()"
 	stmt, err := connection.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
 	result, err := stmt.Query()
 	retval := []pasta{}
+
 	i := 0
 	for result.Next() {
 		retval = append(retval, pasta{})
-		result.Scan(&retval[i].Id, &retval[i].Name)
+		var tags []sql.NullString
+		err = result.Scan(&retval[i].Id, &retval[i].Name, pq.Array(&tags))
+		if err != nil {
+			return retval, err
+		}
+		for _, tag := range tags {
+			if tag.Valid {
+				retval[i].Tags = append(retval[i].Tags, tag.String)
+			}
+		}
 		i++
 	}
 	//TODO: add tag support
