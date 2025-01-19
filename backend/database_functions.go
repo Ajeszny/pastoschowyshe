@@ -102,7 +102,6 @@ func get_records() ([]pasta, error) {
 		}
 		i++
 	}
-	//TODO: add tag support
 	return retval, nil
 }
 
@@ -122,4 +121,40 @@ func get_pasta(id int) (pasta, error) {
 		return p, err
 	}
 	return p, nil
+}
+
+func add_new_creds(credentials string, password string) error {
+	hashed := hash_pwd(password)
+	query := "INSERT INTO users VALUES($1, $2)"
+	stmt, err := connection.Prepare(query)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(credentials, hashed)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func check_creds(credentials string, password string) (bool, error) {
+	hashed := hash_pwd(password)
+	query := "SELECT credentials FROM users WHERE hashed_password = $1"
+	stmt, err := connection.Prepare(query)
+	if err != nil {
+		return false, err
+	}
+	result, err := stmt.Query(hashed)
+	if !result.Next() {
+		return false, nil
+	}
+	var db_uname string
+	err = result.Scan(&db_uname)
+	if err != nil {
+		return false, err
+	}
+	if db_uname != credentials {
+		return false, nil
+	}
+	return true, nil
 }

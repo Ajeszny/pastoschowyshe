@@ -1,7 +1,8 @@
 --Tables
-CREATE TABLE IF NOT EXISTS pasty (pasta_id SERIAL PRIMARY KEY, pasta_name text, pasta_body text)
-CREATE TABLE IF NOT EXISTS pasty_tag_relation (pasta_id integer, tag_id integer)
-CREATE TABLE IF NOT EXISTS Tags (tag_id SERIAL PRIMARY KEY, tag_root text, tag_name text)
+CREATE TABLE IF NOT EXISTS pasty (pasta_id SERIAL PRIMARY KEY, pasta_name text, pasta_body text);
+CREATE TABLE IF NOT EXISTS pasty_tag_relation (pasta_id integer, tag_id integer);
+CREATE TABLE IF NOT EXISTS tags (tag_id SERIAL PRIMARY KEY, tag_root text, tag_name text);
+CREATE TABLE IF NOT EXISTS users (credentials text, hashed_password text);
 
 --Functions
 
