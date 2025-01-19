@@ -8,7 +8,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         result = response.json()
         self.assertEqual(type(result) is list, True)
+        self.assertEqual(type(result[0]["Tags"]) is list, True)
         print(f"Pasta name: {result[0]["Name"]}")
+
+    def test_login(self):
+        json = {"Credentials": "1", "Password": "1"}
+        response = r.post('http://localhost:8000/login', json=json)
+        self.assertEqual(response.status_code, 200)
+        result = response.json()
+        print(f"{result["token"]}")
 
 
 if __name__ == '__main__':
