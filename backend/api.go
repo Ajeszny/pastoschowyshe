@@ -25,6 +25,7 @@ func get_pastas(w http.ResponseWriter, q *http.Request) {
 		w.WriteHeader(501)
 		w.Write([]byte(err.Error()))
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(mrsh)
 }
 
@@ -45,6 +46,7 @@ func login(w http.ResponseWriter, q *http.Request) {
 	check, err := check_creds(info.Credentials, info.Password)
 	if err != nil {
 		w.WriteHeader(500)
+
 		w.Write([]byte("It all went south bro... " + err.Error()))
 		return
 	}
