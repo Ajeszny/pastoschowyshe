@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="pasty.PastaPage"
+             xmlns:local="clr-namespace:pasty"
+             xmlns:models="clr-namespace:pasty.Models"
+             xmlns:vm="clr-namespace:pasty.ViewModels"
+             x:DataType="vm:PastaViewModel"
+             Title="{Binding Body.Name}">
+    <VerticalStackLayout>
+        <Label 
+    Text="{Binding Body.Text}"/>
+    </VerticalStackLayout>
+</ContentPage>

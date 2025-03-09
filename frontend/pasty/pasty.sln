@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pasty", "pasty\pasty.csproj", "{21FA4F22-3CE7-45FD-919A-C51F530CA5DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21FA4F22-3CE7-45FD-919A-C51F530CA5DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21FA4F22-3CE7-45FD-919A-C51F530CA5DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21FA4F22-3CE7-45FD-919A-C51F530CA5DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21FA4F22-3CE7-45FD-919A-C51F530CA5DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5481FFA5-74BF-470E-94B2-C4BD743B9278}
+	EndGlobalSection
+EndGlobal

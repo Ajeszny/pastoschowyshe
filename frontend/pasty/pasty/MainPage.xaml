@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:pasty"
+             xmlns:models="clr-namespace:pasty.Models"
+             xmlns:vm="clr-namespace:pasty.ViewModels"
+             x:Class="pasty.MainPage"
+             x:DataType="vm:MainPageViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <CollectionView ItemsSource="{Binding Pasty}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Pasta">
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.GestureRecognizers>
+                                <SwipeGestureRecognizer Direction="Left"  Command="{Binding Source={ x:RelativeSource AncestorType={x:Type vm:MainPageViewModel}},Path=OnSwiped}" CommandParameter="{Binding .}"/>
+                            </Grid.GestureRecognizers>
+                            <Label
+                                Text="{Binding Name}"
+                                FontAttributes="Bold"
+                                />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
