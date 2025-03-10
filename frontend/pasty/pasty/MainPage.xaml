@@ -25,6 +25,8 @@
                             </Grid.ColumnDefinitions>
                             <Grid.GestureRecognizers>
                                 <SwipeGestureRecognizer Direction="Left"  Command="{Binding Source={ x:RelativeSource AncestorType={x:Type vm:MainPageViewModel}},Path=OnSwiped}" CommandParameter="{Binding .}"/>
+                                <PointerGestureRecognizer PointerPressed="PointerGestureRecognizer_PointerPressed" PointerReleased="PointerGestureRecognizer_PointerReleased"/>
+                                
                             </Grid.GestureRecognizers>
                             <Label
                                 Text="{Binding Name}"

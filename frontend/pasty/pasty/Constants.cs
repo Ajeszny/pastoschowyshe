@@ -8,7 +8,7 @@ namespace pasty
 {
     public static class Constants
     {
-		public const string Url = "http://127.0.0.1:8000";
+		public const string Url = "https://127.0.0.1:8000";
 		public static HttpClient Conn;
 		public const string DatabaseFilename = "Credentials.db3";
 
