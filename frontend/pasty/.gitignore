@@ -44,3 +44,4 @@ app.*.map.json
 
 pasty/bin/
 pasty/obj/
+.vs/

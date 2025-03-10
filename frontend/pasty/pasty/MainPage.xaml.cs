@@ -9,22 +9,29 @@ namespace pasty
         int count = 0;
 
         MainPageViewModel vm;
+		Database db;
 
         public MainPage()
         {
-            vm = new MainPageViewModel(new Command<Pasta>(Trans));
+			db = new Database();
+            vm = new MainPageViewModel(new Command<Pasta>(Transition));
             BindingContext = vm;
             InitializeComponent();
         }
 
-		private async void Trans(Pasta p)
+		private async void Transition(Pasta p)
 		{
-
+			var text = await db.get_pasta(p.Id);
+			if (text is not null)
+			{
+				await Navigation.PushAsync(new PastaPage(text));
+			}
 			var message = new HttpRequestMessage(HttpMethod.Get, Constants.Url + "/get_pasta/" + p.Id);
 			try
 			{
 				var response = await Constants.Conn.SendAsync(message);
-				var text = JsonSerializer.Deserialize<Pasta_Text>(response.Content.ReadAsStream());
+				text = JsonSerializer.Deserialize<Pasta_Text>(response.Content.ReadAsStream());
+				db.add_pasta(text);
 				await Navigation.PushAsync(new PastaPage(text));
 			}
 			catch (HttpRequestException exception)
@@ -36,6 +43,8 @@ namespace pasty
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
+			var l = await db.get_saved_pastas();
+			vm.Pasty = [.. vm.Pasty.Concat(await db.get_saved_pastas())];
 
 			var message = new HttpRequestMessage(HttpMethod.Get, Constants.Url + "/get_pasta_list");
 			try
