@@ -29,6 +29,7 @@ namespace pasty
 				throw new Exception();
 			}
 			var result = await conn.CreateTableAsync<Pasta_DB_Friendly>();
+			result = await conn.CreateTableAsync<Auth_token>();
 		}
 
 		public async Task<Pasta_Text> get_pasta(int id)
@@ -58,6 +59,32 @@ namespace pasty
 			np.Id = p.Id;
 			np.Tags = p.Tags;
 			await conn.InsertAsync(np);
+		}
+
+		public async void save_credentials(Auth_token t)
+		{
+			await Init();
+			await conn.DeleteAllAsync<Auth_token>();
+			await conn.InsertAsync(t);
+		}
+
+		public async void logout()
+		{
+			await Init();
+			await conn.DeleteAllAsync<Auth_token>();
+			Constants.token = null;
+		}
+
+		//Will return null if user is not logged in
+		public async Task<string?> get_credentials()
+		{
+			await Init();
+			var token =  await conn.Table<Auth_token>().FirstOrDefaultAsync();
+			if (token is null)
+			{
+				return null;
+			}
+			return token.token;
 		}
 	}
 }

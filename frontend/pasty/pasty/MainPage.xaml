@@ -7,36 +7,80 @@
              x:Class="pasty.MainPage"
              x:DataType="vm:MainPageViewModel">
 
-    <ScrollView>
-        <VerticalStackLayout
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <CollectionView ItemsSource="{Binding Pasty}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Pasta">
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.GestureRecognizers>
-                                <SwipeGestureRecognizer Direction="Left"  Command="{Binding Source={ x:RelativeSource AncestorType={x:Type vm:MainPageViewModel}},Path=OnSwiped}" CommandParameter="{Binding .}"/>
-                                <PointerGestureRecognizer PointerPressed="PointerGestureRecognizer_PointerPressed" PointerReleased="PointerGestureRecognizer_PointerReleased"/>
-                                
-                            </Grid.GestureRecognizers>
-                            <Label
+                <CollectionView ItemsSource="{Binding Pasty}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Pasta">
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.GestureRecognizers>
+                                    <SwipeGestureRecognizer Direction="Left"  Command="{Binding Source={ x:RelativeSource AncestorType={x:Type vm:MainPageViewModel}},Path=OnSwiped}" CommandParameter="{Binding .}"/>
+                                    <PointerGestureRecognizer PointerPressed="PointerGestureRecognizer_PointerPressed" PointerReleased="PointerGestureRecognizer_PointerReleased"/>
+
+                                </Grid.GestureRecognizers>
+                                <Label
                                 Text="{Binding Name}"
                                 FontAttributes="Bold"
                                 />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-    </ScrollView>
-
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button 
+            x:Name="Menu" 
+            HorizontalOptions="End" 
+            VerticalOptions="End" 
+            Margin="10" 
+            ImageSource="three_dots.png" 
+            BackgroundColor="Aquamarine" 
+            CornerRadius="30" 
+            WidthRequest="60" 
+            HeightRequest="60"
+            Pressed="Menu_Pressed"/>
+        <Button 
+            x:Name="Sudomode" 
+            HorizontalOptions="End" 
+            VerticalOptions="End" 
+            Margin="100" 
+            ImageSource="key.png" 
+            BackgroundColor="Aqua" 
+            CornerRadius="30" 
+            WidthRequest="60" 
+            HeightRequest="60"
+            Pressed="Sudomode_Pressed"/>
+        <Button 
+            x:Name="Random" 
+            HorizontalOptions="End" 
+            VerticalOptions="End" 
+            Margin="100" 
+            ImageSource="dice.png" 
+            BackgroundColor="Aqua" 
+            CornerRadius="30" 
+            WidthRequest="60" 
+            HeightRequest="60"
+            Pressed="Random_Pressed"/>
+        <Button 
+            x:Name="Add" 
+            HorizontalOptions="End" 
+            VerticalOptions="End" 
+            Margin="100" 
+            ImageSource="plus.png" 
+            BackgroundColor="Aqua" 
+            CornerRadius="30" 
+            WidthRequest="60" 
+            HeightRequest="60"/>
+    </Grid>
 </ContentPage>

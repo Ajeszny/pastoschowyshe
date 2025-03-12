@@ -6,7 +6,13 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
-		Constants.Conn = new HttpClient();
+		var handler = new HttpClientHandler
+		{
+			// Always return true to bypass all certificate checks.
+			ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+		};
+		Constants.Conn = new HttpClient(handler);
+		Constants.db = new Database();
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()

@@ -8,8 +8,10 @@ namespace pasty
 {
     public static class Constants
     {
-		public const string Url = "https://127.0.0.1:8000";
+		public const string Url = "https://127.0.0.1:8000";//"https://192.168.1.104:8000";
 		public static HttpClient Conn;
+		public static Database db;
+		public static string? token;//if null then not logged in
 		public const string DatabaseFilename = "Credentials.db3";
 
 		public const SQLite.SQLiteOpenFlags Flags =
