@@ -146,7 +146,7 @@ namespace pasty
 
 		private void Random_Pressed(object sender, EventArgs e)
 		{
-			var randomiser = new System.Random();//Anhelina Mendohralo is bri'ish!!!
+			var randomiser = new System.Random();
 			var pasta = vm.Pasty[randomiser.Next(vm.Pasty.Count)];
 			Transition(pasta);
         }
